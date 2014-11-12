@@ -1,0 +1,208 @@
+#Input file for CT and C'T minimization
+
+
+#Float CA: 1, Fix CA: 0
+1
+
+
+#Set : minCT   maxCT   minC'T   maxC'T   step
+-0.15 0.15 -0.15 0.15 0.0005
+
+
+
+
+#List input data
+#
+#Format:	"Isotope"	"Correlation coefficients" 	"Jinit"	 "Jfinal"	"Z daughter"	"+" or "-" for beta+/-		"MF"(0 or 1) "MGT"(`0` for pure F,`1` for pure GT,rho/CA for mixed)		"<m/E>"		"experimental value"	"error"		"0" or "1" 
+#
+#
+#Old 6He
+#
+6He	a	0	1	3	-	0	1	0.286	-0.3308	0.003	1
+
+
+#New 6He
+#
+6He	a	0	1	3	-	0	1	0.2	-0.3333333	0.0003	0
+
+
+#My thesis 60Co
+60Co	A	5	4	28	-	0	1	0.704	-1.027	0.022	1
+
+
+
+#My 114In
+114In	A	1	0	50	-	0	1	0.209	-0.994	0.014	0
+
+
+
+
+#b_Fierz from 0+ 0+  note: some of the input parameters are obsolete --> From Hardy and Towners E dependence analysis. Just incorporate the rawt ft values
+#
+#0+->0+	b	0	0	1	+	1	0	0	-0.0022	0.0052	0
+
+
+#bFierz from PF/PGT 14O 10  Cnote: some of the input parameters are obsolete (signconvention for bF and bGT is "to be checked")
+#
+14O10C	R	0	0	12	+	1	1	0.292	0.9996	0.0037	1
+
+
+#bFierz from PF/PGT 26mAl 30P  note: some of the input parameters are obsolet
+26Al30P	R	0	1	16	+	1	1	0.2164	1.003	0.0184	1
+	
+
+#a of 38mK to further limit scalar currents in the minimization
+#
+38mK	a	0	0	18	+	1	0	0.1333	0.9981	0.0045	1
+
+
+#a of 32Ar to limit scalar currents
+#
+32Ar	a	0	0	17	+	1	0	0.1913	0.9989	0.0065	1
+
+#
+#Ft values of 0+ -> 0+
+#
+10C	Ft	0	0	5	+	1	0	0.6190	3067.7	4.6	1
+
+14O	Ft	0	0	7	+	1	0	0.4382	3071.5	3.3	1
+
+22Mg	Ft	0	0	11	+	1	0	0.3082	3078.0	7.4	1
+
+34Ar	Ft	0	0	17	+	1	0	0.2122	3069.6	8.5	1
+
+26mAl	Ft	0	0	12	+	1	0	0.3004	3072.4	1.4	1
+
+34Cl	Ft	0	0	16	+	1	0	0.2336	3070.6	2.1	1
+
+38mK	Ft	0	0	18	+	1	0	0.2127	3072.5	2.4	1
+
+42Sc	Ft	0	0	20	+	1	0	0.2002	3072.4	2.7	1
+
+46V	Ft	0	0	22	+	1	0	0.1827	3073.3	2.7	1
+
+50Mn	Ft	0	0	24	+	1	0	0.1690	3070.9	2.8	1
+
+54Co	Ft	0	0	26	+	1	0	0.1567	3069.9	3.3	1
+
+62Ga	Ft	0	0	30	+	1	0	0.1409	3071.5	7.2	1
+
+74Rb	Ft	0	0	36	+	1	0	0.1244	3078.0	13.0	1
+
+
+
+#
+#Neutron A 
+#
+
+#PDG n A
+n	A	0.5	0.5	1	-	1	1.732	0.54	-0.1176	0.00110 0	
+
+#UCNa n A (2013 and old combined) 
+n	A	0.5	0.5	1	-	1	1.732	0.560	-0.11952	0.00110	1
+
+#PERKEO 1997 + 2002 + 2012 Mund2013
+n	A	0.5	0.5	1	-	1	1.732	0.539	-0.11926	0.00050	1
+
+#Liaud n A
+n	A	0.5	0.5	1	-	1	1.732	0.582	-0.1160	0.0015	1
+
+#Yerozolimsky n A
+n	A	0.5	0.5	1	-	1	1.732	0.558	-0.1135	0.0014	1
+
+#Bopp (perkeo I) n A
+n	A	0.5	0.5	1	-	1	1.732	0.581	-0.1146	0.0019 1
+
+
+
+#
+#2012 PDG dataset
+#
+
+#tn PDG 2012
+n	tn	0.5	0.5	1	-	1	1.732	0.653	880.1	1.1 0
+
+#tn Arzumanov 2012 (corrected 2000 result)
+n	tn	0.5	0.5	1	-	1	1.732	0.653	881.6	2.1 1
+
+#tn PICHLMAIER 2010
+n	tn	0.5	0.5	1	-	1	1.732	0.653	880.7	1.8 1
+
+#tn Yue 2005
+n	tn	0.5	0.5	1	-	1	1.732	0.653	887.7	2.3 1
+
+#tn Mampe 1989
+n	tn	0.5	0.5	1	-	1	1.732	0.653	887.60	3.0 1
+
+#tn Mampe 1993
+n	tn	0.5	0.5	1	-	1	1.732	0.653	882.60	2.70 1
+
+#tn Serebrov 2005
+n	tn	0.5	0.5	1	-	1	1.732	0.653	878.5	0.76 1
+
+#tn Byrne 1996
+n	tn	0.5	0.5	1	-	1	1.732	0.653	889.20	4.80 1
+
+
+
+
+#
+#Pre 2005 A for neutron
+#
+n	A	0.5	0.5	1	-	1	1.732	0.54	-0.1176	0.00020 0
+
+
+#PERKEO 1997 
+n	A	0.5	0.5	1	-	1	1.732	0.539	-0.1189	0.0012	0
+
+#PERKEO 2002 
+n	A	0.5	0.5	1	-	1	1.732	0.539	-0.1189	0.0008	0
+
+#Liaud n A
+n	A	0.5	0.5	1	-	1	1.732	0.582	-0.1160	0.0015	0
+
+#Yerozolimsky n A
+n	A	0.5	0.5	1	-	1	1.732	0.558	-0.1135	0.0014	0
+
+#Bopp (perkeo I) n A
+n	A	0.5	0.5	1	-	1	1.732	0.581	-0.1146	0.0019 0
+
+
+#
+#Future super precise An
+#
+
+#
+# Pre 2005 Dataset for the Neutron lifetime
+#
+
+#tn 2006/2008/2010 PDG
+n	tn	0.5	0.5	1	-	1	1.732	0.653	885.7	0.8 0
+
+#tn Mampe 1989
+n	tn	0.5	0.5	1	-	1	1.732	0.653	887.60	3.0 0
+
+#tn Nesvishevsky 1992
+n	tn	0.5	0.5	1	-	1	1.732	0.6453	888.40	3.3 0
+
+#tn Mampe 1993
+n	tn	0.5	0.5	1	-	1	1.732	0.653	882.60	2.70 0
+
+#tn Byrne 1996
+n	tn	0.5	0.5	1	-	1	1.732	0.653	889.20	4.80 0
+
+#tn Arzumanov 2000
+n	tn	0.5	0.5	1	-	1	1.732	0.653	885.40	1.00 0
+
+#tn Dewey 2003
+n	tn	0.5	0.5	1	-	1	1.732	0.653	886.80	3.40 0
+
+#tn Serebrov 2005
+n	tn	0.5	0.5	1	-	1	1.732	0.653	878.5	0.76 0
+
+
+
+#
+#future n b_fierz
+#
+n	bf	0.5	0.5	1	-	1	1.732	0.653	0.0 0.001 0
