@@ -1,7 +1,7 @@
 CXX = g++
 
-ROOT_CFLAGS = `$(ROOTSYS)/bin/root-config --cflags`
-ROOT_LIBS = `$(ROOTSYS)/bin/root-config --libs` -lTree
+ROOT_CFLAGS = `$(ROOTSYS)/bin/root-config --cflags --glibs`
+ROOT_LIBS = `$(ROOTSYS)/bin/root-config --libs --glibs` -lTree
 
 CURRENT_DIR=$(shell pwd)
 
