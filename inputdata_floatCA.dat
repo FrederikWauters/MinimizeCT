@@ -6,7 +6,6 @@
 
 
 #Set : minCT   maxCT   minC'T   maxC'T   step
-
 -0.15 0.15 -0.15 0.15 0.0005
 
 
@@ -38,9 +37,9 @@
 
 
 
-#b_Fierz from 0+ 0+  note: some of the input parameters are obsolete
+#b_Fierz from 0+ 0+  note: some of the input parameters are obsolete --> From Hardy and Towners E dependence analysis. Just incorporate the rawt ft values
 #
-0+->0+	b	0	0	1	+	1	0	0	-0.0022	0.0052	1
+#0+->0+	b	0	0	1	+	1	0	0	-0.0022	0.0052	0
 
 
 #bFierz from PF/PGT 14O 10  Cnote: some of the input parameters are obsolete (signconvention for bF and bGT is "to be checked")
@@ -61,6 +60,34 @@
 #
 32Ar	a	0	0	17	+	1	0	0.1913	0.9989	0.0065	1
 
+#
+#Ft values of 0+ -> 0+
+#
+10C	Ft	0	0	5	+	1	0	0.6190	3067.7	4.6	1
+
+14O	Ft	0	0	7	+	1	0	0.4382	3071.5	3.3	1
+
+22Mg	Ft	0	0	11	+	1	0	0.3082	3078.0	7.4	1
+
+34Ar	Ft	0	0	17	+	1	0	0.2122	3069.6	8.5	1
+
+26mAl	Ft	0	0	12	+	1	0	0.3004	3072.4	1.4	1
+
+34Cl	Ft	0	0	16	+	1	0	0.2336	3070.6	2.1	1
+
+38mK	Ft	0	0	18	+	1	0	0.2127	3072.5	2.4	1
+
+42Sc	Ft	0	0	20	+	1	0	0.2002	3072.4	2.7	1
+
+46V	Ft	0	0	22	+	1	0	0.1827	3073.3	2.7	1
+
+50Mn	Ft	0	0	24	+	1	0	0.1690	3070.9	2.8	1
+
+54Co	Ft	0	0	26	+	1	0	0.1567	3069.9	3.3	1
+
+62Ga	Ft	0	0	30	+	1	0	0.1409	3071.5	7.2	1
+
+74Rb	Ft	0	0	36	+	1	0	0.1244	3078.0	13.0	1
 
 
 
@@ -86,6 +113,35 @@ n	A	0.5	0.5	1	-	1	1.732	0.558	-0.1135	0.0014	1
 #Bopp (perkeo I) n A
 n	A	0.5	0.5	1	-	1	1.732	0.581	-0.1146	0.0019 1
 
+
+
+#
+#2012 PDG dataset
+#
+
+#tn PDG 2012
+n	tn	0.5	0.5	1	-	1	1.732	0.653	880.1	1.1 0
+
+#tn Arzumanov 2012 (corrected 2000 result)
+n	tn	0.5	0.5	1	-	1	1.732	0.653	881.6	2.1 1
+
+#tn PICHLMAIER 2010
+n	tn	0.5	0.5	1	-	1	1.732	0.653	880.7	1.8 1
+
+#tn Yue 2005
+n	tn	0.5	0.5	1	-	1	1.732	0.653	887.7	2.3 1
+
+#tn Mampe 1989
+n	tn	0.5	0.5	1	-	1	1.732	0.653	887.60	3.0 1
+
+#tn Mampe 1993
+n	tn	0.5	0.5	1	-	1	1.732	0.653	882.60	2.70 1
+
+#tn Serebrov 2005
+n	tn	0.5	0.5	1	-	1	1.732	0.653	878.5	0.76 1
+
+#tn Byrne 1996
+n	tn	0.5	0.5	1	-	1	1.732	0.653	889.20	4.80 1
 
 
 
@@ -145,33 +201,6 @@ n	tn	0.5	0.5	1	-	1	1.732	0.653	886.80	3.40 0
 n	tn	0.5	0.5	1	-	1	1.732	0.653	878.5	0.76 0
 
 
-#
-#2012 PDG dataset
-#
-
-#tn PDG 2012
-n	tn	0.5	0.5	1	-	1	1.732	0.653	880.1	1.1 0
-
-#tn Arzumanov 2012 (corrected 2000 result)
-n	tn	0.5	0.5	1	-	1	1.732	0.653	881.6	2.1 1
-
-#tn PICHLMAIER 2010
-n	tn	0.5	0.5	1	-	1	1.732	0.653	880.7	1.8 1
-
-#tn NICO 2005
-n	tn	0.5	0.5	1	-	1	1.732	0.653	886.3	3.4 1
-
-#tn Mampe 1989
-n	tn	0.5	0.5	1	-	1	1.732	0.653	887.60	3.0 1
-
-#tn Mampe 1993
-n	tn	0.5	0.5	1	-	1	1.732	0.653	882.60	2.70 1
-
-#tn Serebrov 2005
-n	tn	0.5	0.5	1	-	1	1.732	0.653	878.5	0.76 1
-
-#tn Byrne 1996
-n	tn	0.5	0.5	1	-	1	1.732	0.653	889.20	4.80 1
 
 #
 #future n b_fierz

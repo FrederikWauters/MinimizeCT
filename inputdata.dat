@@ -2,11 +2,11 @@
 
 
 #Float CA: 1, Fix CA: 0
-1
+#1
 
 
 #Set : minCT   maxCT   minC'T   maxC'T   step
--0.15 0.15 -0.15 0.15 0.0005
+#-0.1 0.1 -0.1 0.1 0.0002
 
 
 
@@ -48,7 +48,7 @@
 
 
 #bFierz from PF/PGT 26mAl 30P  note: some of the input parameters are obsolet
-26Al30P	R	0	1	16	+	1	1	0.2164	1.003	0.0184	1
+26Al30P	R	0	1	16	+	1	1	0.2164	1.003	0.0040	1
 	
 
 #a of 38mK to further limit scalar currents in the minimization
