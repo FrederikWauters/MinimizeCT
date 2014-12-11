@@ -244,7 +244,7 @@ void ConstructContour(TH2* h1, TH2* h2, TGraph* g)
           y = h1->GetYaxis()->GetBinCenter(k);
           if(!filledFirst){ firstx = x; firsty = y; filledFirst = true; }
           //cout << " Bin Content : " << h1->GetBinContent(j,k) << " x " << x << " y " << y << endl;
-          np = g->GetN();
+          np = g->GetN(); 
           g->SetPoint(np,x,y);
           inCLContour = true;
         }
@@ -270,11 +270,9 @@ void ConstructContour(TH2* h1, TH2* h2, TGraph* g)
       }
     }
   }
-
   //close contour
   np = g->GetN();
-  g->SetPoint(np,firstx,firsty);
-        
+  g->SetPoint(np,firstx,firsty);       
 
 }
 

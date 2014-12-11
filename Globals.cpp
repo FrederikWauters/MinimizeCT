@@ -13,7 +13,7 @@ DECAY_CONSTANTS::DECAY_CONSTANTS(){
   
   //Towner and Hardy, ArXiv 2013, check
   supperStrength[0]=2915.64;
-  supperStrength[0]=1.08;
+  supperStrength[1]=1.08;
 
   //constants
   cv = 1.;// C'V = CV
@@ -23,4 +23,5 @@ DECAY_CONSTANTS::DECAY_CONSTANTS(){
   vUD[0] = 0.97425; //I S Towner and J C Hardy 2010 Rep. Prog. Phys. 73 046301, Now floating!
   vUD[1] = 0.00022;
 }
+
 DECAY_CONSTANTS constants;

@@ -198,6 +198,7 @@ vector<double> tSuper(double MF,double MGT, double ca, double cs, double cps, do
 {
   vector<double> vOut; //contains value and error
   double tInv = vud*vud*MF*MF*( 1 + (cs*cs)/(cv*cv) );
+  //double tInv = vud*vud*MF*MF;//*( 1 + (cs*cs)/(cv*cv) );
   vOut.push_back(superDecayStrength/tInv);
   vOut.push_back( errorSuperDecayStrength/vOut.at(0) );
   return vOut;
@@ -215,7 +216,7 @@ double PDFValue(double x,int n)
 void SetHisto(double min, double ca, double vud)
 {
    int nPoints = g->GetN();
-   cout << "N " << nPoints << " CT :" << cT << "  CS : " << cS << "  Chi Min : " << min << endl;   
+   //cout << "N " << nPoints << " CT :" << cT << "  CS : " << cS << "  Chi Min : " << min << endl;   
    g->SetPoint(nPoints, cT, cS, min);
 
   //Fill Ct vs Ctp histo
@@ -223,6 +224,8 @@ void SetHisto(double min, double ca, double vud)
   hChiSqr->SetBinContent(bin,min);
   hPChiSqr->SetBinContent(bin,TMath::Prob(min,nDF)); 
   hPDFChiSqr->SetBinContent(bin,PDFValue(min,nDF));
+  hCA->SetBinContent(bin,ca);
+  hVud->SetBinContent(bin,vud);
 
   
 
@@ -363,7 +366,7 @@ double ChiSqrFunction(const double *xx )
    min->Minimize(); 
  
    const double *xs = min->X();
-   std::cout << "Minimum: f(" << xs[0] << xs[1] << " ): " << min->MinValue()  << std::endl;
+   //std::cout << "Minimum: f(" << xs[0] << xs[1] << " ): " << min->MinValue()  << std::endl;
    
    SetHisto((double)min->MinValue(),xs[0],xs[1]);
    return 0;
@@ -719,6 +722,8 @@ void SetOutput(char* h_name)
   hPChiSqr->Write();
   hPDFChiSqr->Write();
   gCL->Write();
+  hVud->Write();
+  hCA->Write();
 
   //put the input data in root 
   outTree->Write();
@@ -798,7 +803,7 @@ cin >> h_name;
   hCA->GetYaxis()->SetTitle("C_S/C_V");
 
 
-  hVud = new TH2F("hCA","Minimized CA values",nSteps+1,-ctMIN/ca_fixed,-ctMAX/ca_fixed,nPSteps+1,csMIN/cv,csMAX/cv);
+  hVud = new TH2F("hVud","Minimized Vud values",nSteps+1,-ctMIN/ca_fixed,-ctMAX/ca_fixed,nPSteps+1,csMIN/cv,csMAX/cv);
   hVud->GetXaxis()->SetTitle("C_T/C_A");
   hVud->GetYaxis()->SetTitle("C_S/C_V");
 

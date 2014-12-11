@@ -201,7 +201,7 @@ vector<double> TData::ftSuper_NF(double cv, double ca, double cs, double cps, do
 
   double ftInv = vud*vud*mF*mF*( 1 + (cs*cs)/(cv*cv) );
   
-  double strength = constants.supperStrength[0];
+  double strength = constants.supperStrength[0]; 
   double errorstrength = constants.supperStrength[1];
 
   vOut.push_back(strength/ftInv);
@@ -216,7 +216,7 @@ vector<double> TData::FTSupper(double cv, double ca, double cs, double cps, doub
 
   if(parameter.compare("Ft")!=0) { cout << " ft 0+->0+ requested for another nucleus! " << endl; vOut.clear(); return vOut; }
 
-  vector<double> noFierz = ftSuper_NF(cv,ca,cs,cps,ct,cpt,vud);
+  vector<double> noFierz = ftSuper_NF(cv,ca,cs,cps,ct,cpt,vud); 
   double value_NF = noFierz.at(0);
   double error_NF = noFierz.at(1);
   
@@ -262,9 +262,9 @@ std::vector<double> TData::GetExpectation(double cv, double ca, double cs, doubl
     error = values.at(1);
   }
 
-  else if(parameter.compare("ft")==0) {
+  else if(parameter.compare("Ft")==0) {
     vector<double> values = FTSupper(cv,ca,cs,cps,ct,cpt,vud);
-    value = values.at(0);
+    value = values.at(0); 
     error = values.at(1);
   }
 

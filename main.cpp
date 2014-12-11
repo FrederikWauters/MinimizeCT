@@ -1,3 +1,13 @@
+/* c++ version of my ct minimizer. 
+
+Combines the minimization, construction of pdf surface and confidence intervals/contours)
+
+dof = 2 -> scan over ct and cs, and minimize Vud and Ca 
+
+dof = 4 -> scan over ct+ctp and ct-ctp 
+
+*/
+
 #include <cstdio>
 #include <unistd.h>
 #include <iostream>
@@ -15,8 +25,9 @@
 //global variables
 char *fout_name;
 char *fin_name;
-int stepsize;
-const int nArgc = 7;
+double stepsize, spread;
+int dof;
+const int nArgc =11;
 
 using namespace std;
 
@@ -24,26 +35,27 @@ int analyze_command_line (int argc, char **argv);
 
 int main(int argc, char* argv[])
 {
-  std::cout << "Running Delayed Event Tree analysis ... " << std::endl;
+  std::cout << "Running tensor minimizer ... " << std::endl;
     
   //Input arguments
   int ret = analyze_command_line(argc, argv);
   if(ret) { return 1; }
 
   //Set up i/o
-  DataManager* io = new DataManager(fin_name,fout_name);
+  DataManager* io = new DataManager(fin_name,fout_name,dof);
   io->PrintData();
+  io->InitHistos(-spread,-spread,spread,spread,stepsize);
 
   //The actual analysis
-  //TTimeStamp *time = new TTimeStamp;
-  int dof = 2;
-  Analyzer* ana = new Analyzer(2,io,"Minuit","Combined");
-  
-  
-
-
+  Analyzer* ana = new Analyzer(dof,io,"Minuit","Combined");
+  ana->TestRun(0.00,0.005,dof);
+  ana->Run(-spread,-spread,spread,spread,stepsize);
 
   //Wrap things up
+  //io->Plot();
+  io->MakeCLContours(1000,10);
+  io->WriteOutput();
+
 
   return 0;
 }
@@ -69,7 +81,7 @@ if(argc==nArgc)
 	      }
               else
               {
-	        printf("ERROR: No argument for input file specified\n");
+	        printf("ERROR: No argument for output file specified\n");
 	      }
               break;
 
@@ -88,14 +100,38 @@ if(argc==nArgc)
             case 's':
 	      if(i+1 < argc)
               {
-	        stepsize = atoi(argv[i+1]);
+	        stepsize = atof(argv[i+1]);
 	        i+=2;
 	      }
               else
               {
-	        printf("ERROR: No argument for input file specified\n");
+	        printf("ERROR: No argument for step size specified\n");
 	      }
-              break;            
+              break;  
+
+            case 'r':
+	      if(i+1 < argc)
+              {
+	        spread = atof(argv[i+1]);
+	        i+=2;
+	      }
+              else
+              {
+	        printf("ERROR: No argument for plot range specified\n");
+	      }
+              break;   
+
+            case 'd':
+	      if(i+1 < argc)
+              {
+	        dof = atoi(argv[i+1]);
+	        i+=2;
+	      }
+              else
+              {
+	        printf("ERROR: No argument for plot range specified\n");
+	      }
+              break;       
 
              default:
 	     printf("Argument %s not recognized\n",argv[i]);
@@ -107,7 +143,7 @@ if(argc==nArgc)
   }
   else
   {
-    cout << " use as ./Minimize -i inputfile -o outputfile -s step" << endl;
+    cout << " use as ./Minimize -i inputfile -o outputfile -s step -r range -d dof" << endl;
     return 1;
   }
   return 0;

@@ -2,6 +2,10 @@
 //Took an example from the cern/ROOT website, plan is to use it as an alternative for Alejandro's FORTRAN based "amoebe" method
 // Addapt it to calculate limits on CT and C'T  for arbitrary input
 
+//Nov 2014
+//Float Vud and introduce quadratic terms for CS in neutron lifetime and Ft values of 0+ 0+
+
+
 // Example on how to use the new Minimizer class in ROOT
 //  Show usage with all the possible minimizers. 
 // Minimize the Rosenbrock function (a 2D -function)
