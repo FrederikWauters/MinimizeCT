@@ -63,17 +63,17 @@ int Analyzer::InitMinimizer(int dof, const char * minName = "Minuit2", const cha
     minimizer->SetPrintLevel(-1);
     
     ROOT::Math::Functor f2(this,&Analyzer::ChiSqrFunction2,2);
-    ROOT::Math::Functor f4(this,&Analyzer::ChiSqrFunction2,2);
+    ROOT::Math::Functor f4(this,&Analyzer::ChiSqrFunction4,4);
+
 
     if(dof==2) functor = f2;
     else if(dof==4) functor = f4;
     minimizer->SetFunction(functor); 
 
-    double step[dof]; 
-    double variable[2];// = ca and Vud
+    /*double step[dof]; 
+    double variable[dof];// = ca and Vud
     
     TRandom2 r(0);
-
     if(dof==2)
     {
       step[0] = 0.0001; step[1] = 0.00001;
@@ -82,7 +82,7 @@ int Analyzer::InitMinimizer(int dof, const char * minName = "Minuit2", const cha
       variable[1] = r.Uniform(constants.vUD[0]-0.00001,constants.vUD[0]+0.00001);
 
       minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
-      minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.00001,constants.vUD[0]+0.00001);
+      minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
       //minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],0.7,1.3);
     }
     if(dof==4)
@@ -90,18 +90,52 @@ int Analyzer::InitMinimizer(int dof, const char * minName = "Minuit2", const cha
       double step[4]; step[0] =0.0001; step[1] = 0.00001; step[2] = 0.0001; step[3] = 0.0001;  
 
       variable[0] = r.Uniform(-1.26,-1.28);
-      variable[1] = r.Uniform(0.95,1.05);
+      variable[1] = r.Uniform(constants.vUD[0]-0.01,constants.vUD[0]+0.01);
       variable[2] = r.Uniform(-0.05,0.05);
       variable[3] = r.Uniform(-0.05,0.05);
 
       minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
-      minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],0.7,1.3);
+      minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
       minimizer->SetLimitedVariable(2,"Cs",variable[2],step[2],-1,1);
       minimizer->SetLimitedVariable(3,"Csp",variable[3],step[3],-1,1);
-    }
+    }*/
     
-
+    InitVariables(dof);
+    
   return 1;
+}
+
+void Analyzer::InitVariables(int dof)
+{
+  double step[dof]; 
+  double variable[dof];// = ca and Vud
+    
+  TRandom2 r(0);
+  if(dof==2)
+  {
+    step[0] = 0.0001; step[1] = 0.00001;
+    variable[0] = r.Uniform(-1.26,-1.28);
+    //variable[1] = r.Uniform(0.95,1.05);
+    variable[1] = r.Uniform(constants.vUD[0]-0.00001,constants.vUD[0]+0.00001);
+
+    minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
+    minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
+    //minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],0.7,1.3);
+  }
+  if(dof==4)
+  {
+    double step[4]; step[0] =0.0001; step[1] = 0.00001; step[2] = 0.0001; step[3] = 0.0001;  
+
+    variable[0] = r.Uniform(-1.26,-1.28);
+    variable[1] = r.Uniform(constants.vUD[0]-0.01,constants.vUD[0]+0.01);
+    variable[2] = r.Uniform(-0.05,0.05);
+    variable[3] = r.Uniform(-0.05,0.05);
+
+    minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
+    minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
+    minimizer->SetLimitedVariable(2,"Cs",variable[2],step[2],-1,1);
+    minimizer->SetLimitedVariable(3,"Csp",variable[3],step[3],-1,1);
+  }
 }
 
 
@@ -145,12 +179,13 @@ double Analyzer::GetChiSqr(double ca, double cs, double csp, double ct, double c
 }
 
 
-int Analyzer::Run(double low1, double low2, double high1, double high2, double step)
+int Analyzer::Run(double low1, double low2, double high1, double high2, double step, int dof)
 {
   
   if(data.size()<1) return 0;
 
-  cout << "Running minimizer with " << (int)((high1-low1)/step * (high2-low2)/step ) << " steps ... " << endl;
+  int totalSteps = (int)((high1-low1)/step * (high2-low2)/step );
+  cout << "Running minimizer with " << totalSteps << " steps ... " << endl;
   
   par1 = low1; 
   par2 = low2;  
@@ -161,14 +196,21 @@ int Analyzer::Run(double low1, double low2, double high1, double high2, double s
     while(par2<high2)
     {
       nstep++;
+      InitVariables(dof); //resetting the variables is imperative, otherwise they tend to drift away  
       minimizer->Minimize(); 
       const double *xs = minimizer->X();
       double minChiSqr = (double)minimizer->MinValue();
       manager->SetOutput(minChiSqr,xs,par1,par2);
+      /*if(nstep%100==0) 
+      {
+        cout << "step nr " << nstep <<  "  ca = " << xs[0] << endl;
+        cout << "par1 " << par1 << "   par2 " << par2 << " xs[0] " << xs[0] << "  xs[1] " << xs[1] << " xs[2] " << xs[2] << "  xs[3] " << xs[3] << endl; 
+      }*/
       
       //cout << par1 << par2 << endl;
       par2+=step;
-      if(nstep%10000==0) { cout << "step nr " << nstep <<  "  ca = " << xs[0] << endl; }
+      int modulus = (int)(totalSteps/10.);
+      if(nstep%modulus==0) { cout << "step nr " << nstep <<  "  ca = " << xs[0] << endl; }
     }
     par1+=step; par2 = low2;
   }

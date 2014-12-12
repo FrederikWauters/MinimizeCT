@@ -36,6 +36,9 @@ class DataManager {
     TH2F* hChiSqr;
     TH2F* hPDF;
     
+    TH2F* hC1;
+    TH2F* hC2;
+    
     TH1F* hPDF_X;
     TH1F* hPDF_Y;
     

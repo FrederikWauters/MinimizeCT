@@ -25,9 +25,9 @@ dof = 4 -> scan over ct+ctp and ct-ctp
 //global variables
 char *fout_name;
 char *fin_name;
-double stepsize, spread;
+double stepsize, spread_x,spread_y;
 int dof;
-const int nArgc =11;
+const int nArgc =13;
 
 using namespace std;
 
@@ -44,16 +44,17 @@ int main(int argc, char* argv[])
   //Set up i/o
   DataManager* io = new DataManager(fin_name,fout_name,dof);
   io->PrintData();
-  io->InitHistos(-spread,-spread,spread,spread,stepsize);
+  io->InitHistos(-spread_x,-spread_y,spread_x,spread_y,stepsize);
 
   //The actual analysis
   Analyzer* ana = new Analyzer(dof,io,"Minuit","Combined");
   ana->TestRun(0.00,0.005,dof);
-  ana->Run(-spread,-spread,spread,spread,stepsize);
+  ana->Run(-spread_x,-spread_y,spread_y,spread_y,stepsize,dof);
 
   //Wrap things up
   //io->Plot();
   io->MakeCLContours(1000,10);
+  io->Make1DContours();
   io->WriteOutput();
 
 
@@ -109,10 +110,22 @@ if(argc==nArgc)
 	      }
               break;  
 
-            case 'r':
+            case 'x':
 	      if(i+1 < argc)
               {
-	        spread = atof(argv[i+1]);
+	        spread_x = atof(argv[i+1]);
+	        i+=2;
+	      }
+              else
+              {
+	        printf("ERROR: No argument for plot range specified\n");
+	      }
+              break;
+            
+            case 'y':
+	      if(i+1 < argc)
+              {
+	        spread_y = atof(argv[i+1]);
 	        i+=2;
 	      }
               else
@@ -143,7 +156,7 @@ if(argc==nArgc)
   }
   else
   {
-    cout << " use as ./Minimize -i inputfile -o outputfile -s step -r range -d dof" << endl;
+    cout << " use as ./Minimize -i inputfile -o outputfile -s step -x Xrange -y Yrange -d dof" << endl;
     return 1;
   }
   return 0;

@@ -160,22 +160,27 @@ namespace {
 0
     };
     static const char* fwdDeclCode = 
-"class TData;"
-;
-    static const char* payloadCode = 
-"\n"
-"#ifndef G__VECTOR_HAS_CLASS_ITERATOR\n"
-"  #define G__VECTOR_HAS_CLASS_ITERATOR\n"
-"#endif\n"
-"\n"
-"#define _BACKWARD_BACKWARD_WARNING_H\n"
-"#include \"TData.h\"\n"
-"#include \"DataManager.h\"\n"
-"#include \"Globals.h\"\n"
-"#include \"Analyzer.h\"\n"
-"\n"
-"#undef  _BACKWARD_BACKWARD_WARNING_H\n"
-;
+R"DICTFWDDCLS(
+#pragma clang diagnostic ignored "-Wkeyword-compat"
+#pragma clang diagnostic ignored "-Wignored-attributes"
+#pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
+extern int __Cling_Autoloading_Map;
+class __attribute__((annotate("$clingAutoload$TData.h")))  TData;
+)DICTFWDDCLS";
+    static const char* payloadCode = R"DICTPAYLOAD(
+
+#ifndef G__VECTOR_HAS_CLASS_ITERATOR
+  #define G__VECTOR_HAS_CLASS_ITERATOR 1
+#endif
+
+#define _BACKWARD_BACKWARD_WARNING_H
+#include "TData.h"
+#include "DataManager.h"
+#include "Globals.h"
+#include "Analyzer.h"
+
+#undef  _BACKWARD_BACKWARD_WARNING_H
+)DICTPAYLOAD";
     static const char* classesHeaders[]={
 "TData", payloadCode, "@",
 nullptr};

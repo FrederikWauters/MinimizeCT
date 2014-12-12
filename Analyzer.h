@@ -24,7 +24,7 @@ class Analyzer {
     virtual ~Analyzer();
 
     int InitMinimizer(int dof, const char * minName, const char *algoName);
-    int Run(double low1, double low2, double high1, double high2, double step);
+    int Run(double low1, double low2, double high1, double high2, double step, int dof);
     int TestRun(double x, double y, int dof); //Get predicted values
 
     double ChiSqrFunction2(const double *xx);
@@ -43,6 +43,8 @@ class Analyzer {
 
     double par1, par2; //The coupling constants to loop over. Either cs and csp, or (ct+ctp)/ca and (ct-ctp)/ca 
     double cv, ca_SM;
+    
+    void InitVariables(int dof);
 
     
 

@@ -121,8 +121,10 @@ double DataManager::PDFValue(double x,int n)
 
 void DataManager::SetOutput(double min, const double *xs,double par1, double par2)
 {
-  Int_t bin = hCa->FindBin(par1/constants.ca_fixed[0],par2);
-  
+  Int_t bin;
+  if (dof==2) bin = hCa->FindBin(par1/constants.ca_fixed[0],par2);
+    else if (dof==4) bin = hCa->FindBin(par1/constants.ca_fixed[0],par2/constants.ca_fixed[0]);
+ 
   double ca = xs[0];
   double vud = xs[1];
 
@@ -134,13 +136,15 @@ void DataManager::SetOutput(double min, const double *xs,double par1, double par
   //hChiSqr->SetBinContent(bin,min/nDOF);
   hChiSqr->SetBinContent(bin,min);
   hPDF->SetBinContent(bin,PDFValue(min,2));
+  
+  if(dof == 4) { hC1->SetBinContent(bin,xs[2]+xs[3]); hC2->SetBinContent(bin,xs[2]-xs[3]); }
 }
 
 void DataManager::InitHistos(double low1, double low2, double high1, double high2, double step)
 {
   //Histograms
-  int xBins = (int)((high1-low1)/step);
-  int yBins = (int)((high2-low2)/step); cout << xBins << " " << yBins << " " <<step << endl;
+  int xBins = (int)((high1-low1)/step)+1;
+  int yBins = (int)((high2-low2)/step)+1; cout << xBins << " " << yBins << " " <<step << endl;
 
   if(dof==2)
   { 
@@ -154,29 +158,46 @@ void DataManager::InitHistos(double low1, double low2, double high1, double high
     hPDF = new TH2F("hPDF","PDF surface;#frac{C_{T}}{C_{A}};#frac{C_{S}}{C_{V}}",xBins,ctca_min,ctca_max,yBins,cscv_min,cscv_max);
   }
   
+  if(dof==4)
+  { 
+    double ct_plus_ctpca_min = high1/constants.ca_fixed[0];
+    double ct_plus_ctpca_max = low1/constants.ca_fixed[0];
+    double ct_minus_ctpca_min = high2/constants.ca_fixed[0];
+    double ct_minus_ctpca_max = low2/constants.ca_fixed[0];
+    hCa = new TH2F("hCa","Minimum Ca; #frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
+    hVud = new TH2F("hVud","Minimum Vud;#frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
+    hChiSqr = new TH2F("hChiSqr","ChiSqr;#frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
+    hPDF = new TH2F("hPDF","PDF surface;#frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
+    hC1 = new TH2F("hCS_plus","Minimum C_S + C'_S; #frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
+    hC2 = new TH2F("hCS_minus","Minimum C_S - C'_{S}; #frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
+  }
+  
    //Graphs (confidence contours)
    
   g68CL = new TGraph();
-  g68CL->SetLineColor(2);
+  g68CL->SetLineColor(13);
   g68CL->SetLineWidth(2);
   g68CL->SetEditable(kFALSE);
   g68CL->SetName("g68CL");
 
   g90CL = new TGraph();
-  g90CL->SetLineColor(4);
+  g90CL->SetLineColor(1);
   g90CL->SetLineWidth(2);
   g90CL->SetEditable(kFALSE);
   g90CL->SetName("g90CL");
 
   g95CL = new TGraph();
-  g95CL->SetLineColor(6);
+  g95CL->SetLineColor(27);
   g95CL->SetLineWidth(2);
+  g95CL->SetLineStyle(7);
   g95CL->SetEditable(kFALSE);
   g95CL->SetName("g95CL");
   
   double gx[2] = {-0.27,0.27};
   double gy[2] = {-0.27,0.27};
-  gScale = new TGraph(2,gx,gy);  
+  gScale = new TGraph(2,gx,gy);
+  gScale->SetLineWidth(0);
+
   
 }
 
@@ -208,7 +229,7 @@ void DataManager::Plot()
 
 void DataManager::WriteOutput()
 {
-  /*TCanvas *c1 = new TCanvas("c1","68%, 90% and 95% C.L. contours",800,800);
+  TCanvas *c1 = new TCanvas("c1","68%, 90% and 95% C.L. contours",800,800);
   c1->cd();
   gPad->SetGridx();
   gPad->SetGridy();
@@ -218,25 +239,34 @@ void DataManager::WriteOutput()
   mga->Add(g90CL,"l");
   mga->Add(g68CL,"l");
   mga->Draw("A");
+  
   if(dof==2)
   {
     mga->GetXaxis()->SetTitle("#frac{C_{T}}{C_{A}}");
     mga->GetYaxis()->SetTitle("#frac{C_{S}}{C_{V}}");
+    mga->GetYaxis()->SetRangeUser(-0.01,0.01);
+    mga->GetXaxis()->SetRangeUser(-0.01,0.01);
   }
   else if(dof==4)
   {
     mga->GetXaxis()->SetTitle("#frac{C_{T}+C'_{T}}{C_{A}}");
     mga->GetYaxis()->SetTitle("#frac{C_{T}-C'_{T}}{C_{A}}");
+    mga->GetYaxis()->SetRangeUser(-0.3,0.3);
+    mga->GetXaxis()->SetRangeUser(-0.1,0.1);
   }
   mga->GetXaxis()->CenterTitle();
   mga->GetYaxis()->CenterTitle();
-  mga->GetYaxis()->SetRangeUser(-0.1,0.1);
-  mga->GetXaxis()->SetRangeUser(-0.1,0.1);*/
+  
+  gPad->Update();
+  
   g68CL->Write();
   g90CL->Write();
   g95CL->Write();
   //mga->Write();
-  //c1->Write();
+  c1->Write();
+  
+  data.at(0)->Write();
+  
   fout->Write();
 }
 
@@ -260,7 +290,7 @@ void DataManager::ConstructContour(TH2* h1, TH2* h2, TGraph* g)
           x = h1->GetXaxis()->GetBinCenter(j);
           y = h1->GetYaxis()->GetBinCenter(k);
           if(!filledFirst){ firstx = x; firsty = y; filledFirst = true; }
-          np = g->GetN(); cout << "np " << np <<  " x " << x  << " y " << y << endl;
+          np = g->GetN(); 
           g->SetPoint(np,x,y); 
           inCLContour = true;
         }
@@ -359,7 +389,6 @@ void DataManager::MakeCLContours(int nPoints, double deltaChiSqr)
 
 void DataManager::Make1DContours()
 {
-  hPDF_X = hPDF->ProjectionX();
-  hPDF_X = hPDF->ProjectionX();
-
+  hPDF_X = (TH1F*)hPDF->ProjectionX("hPDF_XProjection");
+  hPDF_Y = (TH1F*)hPDF->ProjectionY("hPDF_YProjection");
 }
