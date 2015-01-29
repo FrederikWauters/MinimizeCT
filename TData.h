@@ -71,7 +71,7 @@ class TData : public TObject {
 	
 
 
- ClassDef(TData,2);
+ ClassDef(TData,3);
     
 };
 

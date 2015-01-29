@@ -22,6 +22,7 @@ Process input
 #include <TF1.h>
 #include <TRandom.h>
 #include "TMath.h"
+#include "TTree.h"
 
 //#include <TGButton.h>
 //#inc/lude <TGFrame.h>
@@ -122,8 +123,9 @@ double DataManager::PDFValue(double x,int n)
 void DataManager::SetOutput(double min, const double *xs,double par1, double par2)
 {
   Int_t bin;
-  if (dof==2) bin = hCa->FindBin(par1/constants.ca_fixed[0],par2);
-    else if (dof==4) bin = hCa->FindBin(par1/constants.ca_fixed[0],par2/constants.ca_fixed[0]);
+  if (dof==2 || dof == -2) bin = hCa->FindBin(par1/constants.ca_fixed[0],par2);
+  else if (dof==4) bin = hCa->FindBin(par1/constants.ca_fixed[0],par2/constants.ca_fixed[0]);
+  else if (dof==-4) bin = hCa->FindBin(par1/constants.cv,par2/constants.cv);
  
   double ca = xs[0];
   double vud = xs[1];
@@ -138,6 +140,7 @@ void DataManager::SetOutput(double min, const double *xs,double par1, double par
   hPDF->SetBinContent(bin,PDFValue(min,2));
   
   if(dof == 4) { hC1->SetBinContent(bin,xs[2]+xs[3]); hC2->SetBinContent(bin,xs[2]-xs[3]); }
+  if(dof == -4) { hC1->SetBinContent(bin,(xs[2]+xs[3])/constants.ca_fixed[0]); hC2->SetBinContent(bin,(xs[2]-xs[3])/constants.ca_fixed[0]); }
 }
 
 void DataManager::InitHistos(double low1, double low2, double high1, double high2, double step)
@@ -146,7 +149,7 @@ void DataManager::InitHistos(double low1, double low2, double high1, double high
   int xBins = (int)((high1-low1)/step)+1;
   int yBins = (int)((high2-low2)/step)+1; cout << xBins << " " << yBins << " " <<step << endl;
 
-  if(dof==2)
+  if(dof==2 || dof==-2)
   { 
     double ctca_min = high1/constants.ca_fixed[0];
     double ctca_max = low1/constants.ca_fixed[0];
@@ -170,6 +173,20 @@ void DataManager::InitHistos(double low1, double low2, double high1, double high
     hPDF = new TH2F("hPDF","PDF surface;#frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
     hC1 = new TH2F("hCS_plus","Minimum C_S + C'_S; #frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
     hC2 = new TH2F("hCS_minus","Minimum C_S - C'_{S}; #frac{C_{T}+C'_{T}}{C_{A}};#frac{C_{T}-C'_{T}}{C_{A}}",xBins,ct_plus_ctpca_min,ct_plus_ctpca_max,yBins,ct_minus_ctpca_min,ct_minus_ctpca_max);
+  }
+  
+  if(dof==-4)
+  {
+    double cs_plus_cspcv_min = low1/constants.cv;
+    double cs_plus_cspcv_max = high1/constants.cv;
+    double cs_minus_cspcv_min = low2/constants.cv;
+    double cs_minus_cspcv_max = high2/constants.cv;
+    hCa = new TH2F("hCa","Minimum Ca; #frac{C_{S}+C'_{S}}{C_{S}};#frac{C_{S}-C'_{S}}{C_{V}}",xBins,cs_plus_cspcv_min,cs_plus_cspcv_max,yBins,cs_minus_cspcv_min,cs_minus_cspcv_max);
+    hVud = new TH2F("hVud","Minimum Vud;#frac{C_{S}+C'_{S}}{C_{V}};#frac{C_{S}-C'_{S}}{C_{V}}",xBins,cs_plus_cspcv_min,cs_plus_cspcv_max,yBins,cs_minus_cspcv_min,cs_minus_cspcv_max);
+    hChiSqr = new TH2F("hChiSqr","ChiSqr;#frac{C_{S}+C'_{S}}{C_{V}};#frac{C_{S}-C'_{S}}{C_{V}}",xBins,cs_plus_cspcv_min,cs_plus_cspcv_max,yBins,cs_minus_cspcv_min,cs_minus_cspcv_max);
+    hPDF = new TH2F("hPDF","PDF surface;#frac{C_{S}+C'_{S}}{C_{V}};#frac{C_{S}-C'_{S}}{C_{V}}",xBins,cs_plus_cspcv_min,cs_plus_cspcv_max,yBins,cs_minus_cspcv_min,cs_minus_cspcv_max);
+    hC1 = new TH2F("hCT_plus","Minimum C_S + C'_S; #frac{C_{S}+C'_{S}}{C_{V}};#frac{C_{S}-C'_{S}}{C_{V}}",xBins,cs_plus_cspcv_min,cs_plus_cspcv_max,yBins,cs_minus_cspcv_min,cs_minus_cspcv_max);
+    hC2 = new TH2F("hCT_minus","Minimum C_S - C'_{S}; #frac{C_{S}+C'_{S}}{C_{V}};#frac{C_{S}-C'_{S}}{C_{V}}",xBins,cs_plus_cspcv_min,cs_plus_cspcv_max,yBins,cs_minus_cspcv_min,cs_minus_cspcv_max);
   }
   
    //Graphs (confidence contours)
@@ -197,6 +214,12 @@ void DataManager::InitHistos(double low1, double low2, double high1, double high
   double gy[2] = {-0.27,0.27};
   gScale = new TGraph(2,gx,gy);
   gScale->SetLineWidth(0);
+  
+  hPDF_X = new TH1F();
+  hPDF_Y= new TH1F();
+    
+  hCL_X= new TH1F();
+  hCL_Y= new TH1F();
 
   
 }
@@ -233,6 +256,7 @@ void DataManager::WriteOutput()
   c1->cd();
   gPad->SetGridx();
   gPad->SetGridy();
+  gScale->SetLineColor(0);	
   mga = new TMultiGraph("mga","2D confidence contours");
   mga->Add(gScale,"");
   mga->Add(g95CL,"l");
@@ -240,7 +264,14 @@ void DataManager::WriteOutput()
   mga->Add(g68CL,"l");
   mga->Draw("A");
   
-  if(dof==2)
+  if(dof==2 )
+  {
+    mga->GetXaxis()->SetTitle("#frac{C_{T}}{C_{A}}");
+    mga->GetYaxis()->SetTitle("#frac{C_{S}}{C_{V}}");
+    mga->GetYaxis()->SetRangeUser(-0.1,0.1);
+    mga->GetXaxis()->SetRangeUser(-0.1,0.1);
+  }
+  if(dof==-2 )
   {
     mga->GetXaxis()->SetTitle("#frac{C_{T}}{C_{A}}");
     mga->GetYaxis()->SetTitle("#frac{C_{S}}{C_{V}}");
@@ -254,6 +285,13 @@ void DataManager::WriteOutput()
     mga->GetYaxis()->SetRangeUser(-0.3,0.3);
     mga->GetXaxis()->SetRangeUser(-0.1,0.1);
   }
+  else if(dof==-4)
+  {
+    mga->GetXaxis()->SetTitle("#frac{C_{S}+C'_{S}}{C_{V}}");
+    mga->GetYaxis()->SetTitle("#frac{C_{S}-C'_{S}}{C_{V}}");
+    mga->GetYaxis()->SetRangeUser(-0.3,0.3);
+    mga->GetXaxis()->SetRangeUser(-0.1,0.1);
+  }
   mga->GetXaxis()->CenterTitle();
   mga->GetYaxis()->CenterTitle();
   
@@ -262,12 +300,25 @@ void DataManager::WriteOutput()
   g68CL->Write();
   g90CL->Write();
   g95CL->Write();
-  //mga->Write();
   c1->Write();
   
+  TData* datapoint = 0;
+  TTree* tree = new TTree("InputData","Input data to this minimizer run");
+  tree->Branch("datapoint","TData",&datapoint,0,64000);
+  
+  if(data.size()>0)
+  {
+    for(int i = 0; i < data.size(); i++)
+    {
+      datapoint = data.at(i);
+      tree->Fill();
+    }
+  }
   data.at(0)->Write();
+  //tree->Write();
   
   fout->Write();
+  delete tree;
 }
 
 void DataManager::ConstructContour(TH2* h1, TH2* h2, TGraph* g)
@@ -387,8 +438,104 @@ void DataManager::MakeCLContours(int nPoints, double deltaChiSqr)
   delete hCloneB;
 }
 
-void DataManager::Make1DContours()
+void DataManager::Make1DContours(double CL, int nPoints)
 {
   hPDF_X = (TH1F*)hPDF->ProjectionX("hPDF_XProjection");
   hPDF_Y = (TH1F*)hPDF->ProjectionY("hPDF_YProjection");
+  
+  double totalInt1 = hPDF_X->Integral();
+  double totalInt2 = hPDF_Y->Integral();
+
+
+  //main loop   
+  hCL_X = (TH1F*)hPDF_X->Clone();
+  hCL_Y = (TH1F*)hPDF_Y->Clone();
+  hCL_X->SetName("hCL_X");
+  hCL_Y->SetName("hCL_Y");
+
+  double maximum = hPDF_X->GetBinContent(hPDF_X->GetMaximumBin());
+  double min = 0.0;
+  double ratio, newInt;  
+
+  for(Int_t i = 0; i < nPoints ;i++)
+  {  
+    min = 0 + i * maximum/(double)nPoints; 
+    for(Int_t j = 1; j <= hCL_X->GetNbinsX(); j++)
+    {
+      if(hPDF_X->GetBinContent(j) < min){  hCL_X->SetBinContent(j,0); }
+    }
+    newInt = hCL_X->Integral();
+    ratio = newInt/totalInt1;    
+    if (ratio < CL) break;
+  }
+  
+  maximum = hPDF_Y->GetBinContent(hPDF_Y->GetMaximumBin());
+  min = 0.0;
+  
+  for(Int_t i = 0; i < nPoints ;i++)
+  {  
+    min = 0 + i * maximum/(double)nPoints; 
+    for(Int_t j = 1; j <= hCL_Y->GetNbinsX(); j++)
+    {
+      if(hPDF_Y->GetBinContent(j) < min){  hCL_Y->SetBinContent(j,0); }
+    }
+    newInt = hCL_Y->Integral();
+    ratio = newInt/totalInt2;    
+    if (ratio < CL) break;
+  }
+  
+  //Print CL
+  
+  double low = 0.; double high = 0.;
+  
+  int nBins_X = hCL_X->GetNbinsX();
+  int nBins_Y = hCL_Y->GetNbinsX();
+  
+  for(int i = 1; i < nBins_X; i++)
+  {
+    if(hCL_X->GetBinContent(i) > 0) 
+    {
+      low = hCL_X->GetBinCenter(i);
+      break;
+    }
+    else continue;    
+  }
+  
+  for(int i = nBins_X; i > 0; i--)
+  {
+    if(hCL_X->GetBinContent(i) > 0) 
+    {
+      high = hCL_X->GetBinCenter(i);
+      break;
+    }
+    else continue;
+  }
+  
+  cout << CL << " confidence level (X) is [ " << low << " ; " << high << " ] " << endl;
+  
+  for(int i = 1; i < nBins_Y; i++)
+  {
+    if(hCL_Y->GetBinContent(i) > 0) 
+    {
+      low = hCL_Y->GetBinCenter(i);
+      break;
+    }
+    else continue;    
+  }
+  
+  for(int i = nBins_Y; i > 0; i--)
+  {
+    if(hCL_Y->GetBinContent(i) > 0) 
+    {
+      high = hCL_Y->GetBinCenter(i);
+      break;
+    }
+    else continue;
+  }
+  
+  
+  cout << CL << " confidence level (Y) is [ " << low << " ; " << high << " ] " << endl;
+  
 }
+
+

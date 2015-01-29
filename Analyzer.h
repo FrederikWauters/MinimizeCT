@@ -28,7 +28,9 @@ class Analyzer {
     int TestRun(double x, double y, int dof); //Get predicted values
 
     double ChiSqrFunction2(const double *xx);
+    double ChiSqrFunction2bis(const double *xx);
     double ChiSqrFunction4(const double *xx);
+    double ChiSqrFunction4bis(const double *xx);
     double GetChiSqr(double ca, double cs, double csp, double ct, double ctp, double vud);
 
 

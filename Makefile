@@ -28,7 +28,7 @@ $(EXECUTABLE): main.cpp $(OBJECTS) $(CURRENT_DIR)/libDataClasses.so
 DataClassesDict.cpp: $(HEADERS) LinkDef.h
 	$(ROOTSYS)/bin/rootcint -f $@ -c $^
 
-$(CURRENT_DIR)/libDataClasses.so: $(OBJECTS) DataClassesDict.o
+$(CURRENT_DIR)/libDataClasses.so: $(OBJECTS) DataClassesDict.o 
 	$(CXX) -Wl,--no-as-needed $(ROOT_LIBS) -shared -fPIC -o $@ $(shell root-config --ldflags) -I$(ROOTSYS)/include $^
 
 libDataClasses.rootmap: libDataClasses.so LinkDef.h

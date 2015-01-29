@@ -42,6 +42,9 @@ class DataManager {
     TH1F* hPDF_X;
     TH1F* hPDF_Y;
     
+    TH1F* hCL_X;
+    TH1F* hCL_Y;
+    
     TGraph* g68CL;
     TGraph* g90CL;
     TGraph* g95CL;
@@ -67,7 +70,8 @@ class DataManager {
     //post processing
     void ConstructContour(TH2* h1, TH2* h2, TGraph* g);
     void MakeCLContours(int nPoints, double dChiSqr);
-    void Make1DContours();
+    void Make1DContours(double CL, int nPoints);
+
 
 
 

@@ -29,3 +29,12 @@
 *.pdf
 *~
 *pcm
+*.aux
+*.dvi
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.backup
+

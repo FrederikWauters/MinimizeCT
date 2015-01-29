@@ -48,13 +48,13 @@ int main(int argc, char* argv[])
 
   //The actual analysis
   Analyzer* ana = new Analyzer(dof,io,"Minuit","Combined");
-  ana->TestRun(0.00,0.005,dof);
+  ana->TestRun(0.00,0.00,dof);
   ana->Run(-spread_x,-spread_y,spread_y,spread_y,stepsize,dof);
 
   //Wrap things up
   //io->Plot();
   io->MakeCLContours(1000,10);
-  io->Make1DContours();
+  io->Make1DContours(0.9,1000);
   io->WriteOutput();
 
 

@@ -63,43 +63,17 @@ int Analyzer::InitMinimizer(int dof, const char * minName = "Minuit2", const cha
     minimizer->SetPrintLevel(-1);
     
     ROOT::Math::Functor f2(this,&Analyzer::ChiSqrFunction2,2);
+    ROOT::Math::Functor f2bis(this,&Analyzer::ChiSqrFunction2bis,2);
     ROOT::Math::Functor f4(this,&Analyzer::ChiSqrFunction4,4);
-
-
+    ROOT::Math::Functor f4bis(this,&Analyzer::ChiSqrFunction4bis,4);  //for CS, C'S scan
+    
+    
     if(dof==2) functor = f2;
+    else if(dof==-2) functor = f2bis;
     else if(dof==4) functor = f4;
+    else if(dof==-4) functor = f4bis;
     minimizer->SetFunction(functor); 
-
-    /*double step[dof]; 
-    double variable[dof];// = ca and Vud
-    
-    TRandom2 r(0);
-    if(dof==2)
-    {
-      step[0] = 0.0001; step[1] = 0.00001;
-      variable[0] = r.Uniform(-1.26,-1.28);
-      //variable[1] = r.Uniform(0.95,1.05);
-      variable[1] = r.Uniform(constants.vUD[0]-0.00001,constants.vUD[0]+0.00001);
-
-      minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
-      minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
-      //minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],0.7,1.3);
-    }
-    if(dof==4)
-    {
-      double step[4]; step[0] =0.0001; step[1] = 0.00001; step[2] = 0.0001; step[3] = 0.0001;  
-
-      variable[0] = r.Uniform(-1.26,-1.28);
-      variable[1] = r.Uniform(constants.vUD[0]-0.01,constants.vUD[0]+0.01);
-      variable[2] = r.Uniform(-0.05,0.05);
-      variable[3] = r.Uniform(-0.05,0.05);
-
-      minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
-      minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
-      minimizer->SetLimitedVariable(2,"Cs",variable[2],step[2],-1,1);
-      minimizer->SetLimitedVariable(3,"Csp",variable[3],step[3],-1,1);
-    }*/
-    
+   
     InitVariables(dof);
     
   return 1;
@@ -107,34 +81,51 @@ int Analyzer::InitMinimizer(int dof, const char * minName = "Minuit2", const cha
 
 void Analyzer::InitVariables(int dof)
 {
-  double step[dof]; 
-  double variable[dof];// = ca and Vud
+  int degree_of_freedom = abs(dof);
+  double step[degree_of_freedom]; 
+  double variable[degree_of_freedom];// = ca and Vud
     
   TRandom2 r(0);
-  if(dof==2)
+  if(dof==2 || dof == -2)
   {
     step[0] = 0.0001; step[1] = 0.00001;
     variable[0] = r.Uniform(-1.26,-1.28);
-    //variable[1] = r.Uniform(0.95,1.05);
-    variable[1] = r.Uniform(constants.vUD[0]-0.00001,constants.vUD[0]+0.00001);
+    variable[1] = r.Uniform(constants.vUD[0]-0.001,constants.vUD[0]+0.001);
 
     minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
-    minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
-    //minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],0.7,1.3);
+   minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
+    //minimizer->SetFixedVariable(1,"Vud",constants.vUD[0]);
+
   }
   if(dof==4)
   {
     double step[4]; step[0] =0.0001; step[1] = 0.00001; step[2] = 0.0001; step[3] = 0.0001;  
 
     variable[0] = r.Uniform(-1.26,-1.28);
-    variable[1] = r.Uniform(constants.vUD[0]-0.01,constants.vUD[0]+0.01);
-    variable[2] = r.Uniform(-0.05,0.05);
-    variable[3] = r.Uniform(-0.05,0.05);
+    variable[1] = r.Uniform(constants.vUD[0]-0.001,constants.vUD[0]+0.001);
+    variable[2] = r.Uniform(-0.02,0.02);
+    variable[3] = r.Uniform(-0.02,0.02);
 
     minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
     minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
+    //minimizer->SetFixedVariable(1,"Vud",constants.vUD[0]);
     minimizer->SetLimitedVariable(2,"Cs",variable[2],step[2],-1,1);
     minimizer->SetLimitedVariable(3,"Csp",variable[3],step[3],-1,1);
+  }
+  if(dof==-4)
+  {
+    double step[4]; step[0] =0.0001; step[1] = 0.00001; step[2] = 0.0001; step[3] = 0.0001;  
+
+    variable[0] = r.Uniform(-1.26,-1.28);
+    variable[1] = r.Uniform(constants.vUD[0]-0.001,constants.vUD[0]+0.001);
+    variable[2] = r.Uniform(-0.02,0.02);
+    variable[3] = r.Uniform(-0.02,0.02);
+
+    minimizer->SetLimitedVariable(0,"Ca",variable[0], step[0],-1.5,-1.);
+    minimizer->SetLimitedVariable(1,"Vud",variable[1],step[1],constants.vUD[0]-0.1,constants.vUD[0]+0.1);
+    //minimizer->SetFixedVariable(1,"Vud",constants.vUD[0]);
+    minimizer->SetLimitedVariable(2,"Ct",variable[2],step[2],-1,1);
+    minimizer->SetLimitedVariable(3,"Ctp",variable[3],step[3],-1,1);
   }
 }
 
@@ -145,6 +136,18 @@ double Analyzer::ChiSqrFunction2(const double *xx )
   double vud = xx[1];
   double cs = par2; double csp = par2;
   double ct = par1; double ctp = par1;
+  //cout << "call chisqr " << endl;
+  double value = GetChiSqr(ca,cs,csp,ct,ctp,vud);
+
+  return value;
+}
+
+double Analyzer::ChiSqrFunction2bis(const double *xx )
+{
+  double ca = xx[0];
+  double vud = xx[1];
+  double cs = par2; double csp = -par2;
+  double ct = par1; double ctp = -par1;
   //cout << "call chisqr " << endl;
   double value = GetChiSqr(ca,cs,csp,ct,ctp,vud);
 
@@ -162,6 +165,19 @@ double Analyzer::ChiSqrFunction4(const double *xx )
   double value = GetChiSqr(ca,cs,csp,ct,ctp,vud);
   return value;
 }
+
+double Analyzer::ChiSqrFunction4bis(const double *xx )
+{
+  double ca = xx[0];
+  double vud = xx[1];
+  double ct = xx[2];
+  double ctp = xx[3];
+  double cs = (par1 + par2)/2.;
+  double csp = (par1 - par2)/2.;
+  double value = GetChiSqr(ca,cs,csp,ct,ctp,vud);
+  return value;
+}
+
 
 double Analyzer::GetChiSqr(double ca, double cs, double csp, double ct, double ctp, double vud)
 {
@@ -231,11 +247,22 @@ int Analyzer::TestRun(double x, double y, int dof)
     cs = y; csp = y;
     ct = x; ctp = x;
   }
+  if(dof==-2)
+  {
+    cs = y; csp = -y;
+    ct = x; ctp = -x;
+  }
   if(dof ==4)
   {
     ct = (x + y)/2.;
     ctp = (x - y)/2.;
     cs = 0.; csp = 0.;
+  }
+  if(dof == -4)
+  {
+    cs = (x + y)/2.;
+    csp = (x - y)/2.;
+    ct = 0.; ctp = 0.;
   }
 
   std::cout.precision(4);
