@@ -264,14 +264,14 @@ void DataManager::WriteOutput()
   mga->Add(g68CL,"l");
   mga->Draw("A");
   
-  if(dof==2 )
+  if(dof==-2 )
   {
     mga->GetXaxis()->SetTitle("#frac{C_{T}}{C_{A}}");
     mga->GetYaxis()->SetTitle("#frac{C_{S}}{C_{V}}");
-    mga->GetYaxis()->SetRangeUser(-0.1,0.1);
-    mga->GetXaxis()->SetRangeUser(-0.1,0.1);
+    mga->GetYaxis()->SetRangeUser(-0.15,0.15);
+    mga->GetXaxis()->SetRangeUser(-0.15,0.15);
   }
-  if(dof==-2 )
+  if(dof==2 )
   {
     mga->GetXaxis()->SetTitle("#frac{C_{T}}{C_{A}}");
     mga->GetYaxis()->SetTitle("#frac{C_{S}}{C_{V}}");
@@ -314,7 +314,7 @@ void DataManager::WriteOutput()
       tree->Fill();
     }
   }
-  data.at(0)->Write();
+  //data.at(0)->Write();
   //tree->Write();
   
   fout->Write();
