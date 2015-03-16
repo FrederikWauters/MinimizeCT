@@ -17,10 +17,10 @@ CXXFLAGS= -g -O2 -Wall $(ROOT_CFLAGS) -fPIC -I$(ROOTSYS)/include -I$(CURRENT_DIR
 LDFLAGS=$(ROOT_LIBS)
 
 
-all: $(EXECUTABLE) libDataClasses.so 
+all: $(EXECUTABLE) libDataClasses.so libDataClasses.rootmap 
 
-$(EXECUTABLE): main.cpp $(OBJECTS) $(CURRENT_DIR)/libDataClasses.so
-	$(CXX)  $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
+#$(EXECUTABLE): main.cpp $(OBJECTS) $(CURRENT_DIR)/libDataClasses.so
+#	$(CXX)  $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 #TInput.o: TInput.cpp $(HEADERS)
 #	$(CXX) -c -o $@ $< $(CXXFLAGS) $(ROOT_FLAGS)
@@ -31,8 +31,11 @@ DataClassesDict.cpp: $(HEADERS) LinkDef.h
 $(CURRENT_DIR)/libDataClasses.so: $(OBJECTS) DataClassesDict.o 
 	$(CXX) -Wl,--no-as-needed $(ROOT_LIBS) -shared -fPIC -o $@ $(shell root-config --ldflags) -I$(ROOTSYS)/include $^
 
-libDataClasses.rootmap: libDataClasses.so LinkDef.h
-	rlibmap -f -o $@ -l libDataClasses.so -c LinkDef.h
+libDataClasses.rootmap: libDataClasses.so LinkDef.h 
+	rlibmap -f -o $@ -l libDataClasses.so -c LinkDef.h 
+
+$(EXECUTABLE): main.cpp $(OBJECTS) $(CURRENT_DIR)/libDataClasses.so
+	$(CXX)  $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 
 

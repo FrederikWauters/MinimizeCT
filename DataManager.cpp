@@ -538,4 +538,21 @@ void DataManager::Make1DContours(double CL, int nPoints)
   
 }
 
+Double_t  DataManager::GetCorrelation(TH2* h)
+{
+  if(hPDF ==NULL) { cout << " !!!!! cant calculate correlation !!!! " << endl; return 0.;}
+  if(hPDF->Integral() <= 0.)  { cout << " !!!!! cant calculate correlation, PDF is empty !!!! " << endl; return 0.;}
+  //use root methods
+  double covariance = h->GetCovariance();
+  double correlation= h->GetCorrelationFactor();
+  cout << " Covariance : " << covariance << " correlaion : " << correlation << endl << endl; 
+  return correlation;
+}
+
+Double_t  DataManager::GetCorrelation()
+{
+  cout << "Calculating correlation from PDF: " << endl; 
+  return GetCorrelation(hPDF);
+}
+
 

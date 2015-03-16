@@ -71,6 +71,8 @@ class DataManager {
     void ConstructContour(TH2* h1, TH2* h2, TGraph* g);
     void MakeCLContours(int nPoints, double dChiSqr);
     void Make1DContours(double CL, int nPoints);
+    Double_t GetCorrelation();
+    Double_t GetCorrelation(TH2* h);
 
 
 

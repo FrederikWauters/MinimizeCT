@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
   //io->Plot();
   io->MakeCLContours(1000,10);
   io->Make1DContours(0.9,1000);
+  io->GetCorrelation();
   io->WriteOutput();
 
 
