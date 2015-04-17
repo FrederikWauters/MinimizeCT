@@ -221,7 +221,7 @@ void DataManager::InitHistos(double low1, double low2, double high1, double high
   hCL_X= new TH1F();
   hCL_Y= new TH1F();
 
-  
+  h90CL = new TH2F();
 }
 
 void DataManager::Plot()
@@ -425,6 +425,8 @@ void DataManager::MakeCLContours(int nPoints, double deltaChiSqr)
       cout << "Construct 90% C.L. contour, delta chi sqr =  " << chiSqr - minchiSqrValue<< endl;
       ConstructContour(hClone,hCloneB,g90CL);
       filled90=true;
+      h90CL = (TH2F*)hClone->Clone();
+      h90CL->SetName("h90CL");
     } 
 
     if(100.-newInt/totalInt*100. > 95. && !filled95)
@@ -434,6 +436,15 @@ void DataManager::MakeCLContours(int nPoints, double deltaChiSqr)
       filled95=true;
     }
   }
+  
+  for(Int_t j = 1; j <= h90CL->GetNbinsX(); j++)
+  {
+    for(Int_t k = 1; k <= h90CL->GetNbinsY(); k ++)
+    {
+      if(h90CL->GetBinContent(j,k) > 0.){  h90CL->SetBinContent(j,k,1); }
+    }
+  }
+  
   delete hClone;
   delete hCloneB;
 }
