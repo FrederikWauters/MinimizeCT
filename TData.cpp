@@ -247,8 +247,9 @@ std::vector<double> TData::GetExpectation(double cv, double ca, double cs, doubl
 {
   double value=0.;
   double error=0.;
-
-  if(parameter.compare("a")==0) value = a(cv,ca,cs,cps,ct,cpt);
+  
+  
+  if(parameter.compare("a")==0) value = a(cv,-1.27,cs,cps,ct,cpt);
 
   else if(parameter.compare("A")==0) value = A(cv,ca,cs,cps,ct,cpt);
 
