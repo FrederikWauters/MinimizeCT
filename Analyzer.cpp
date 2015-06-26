@@ -34,7 +34,7 @@ using std::vector;
 //DECAY_CONSTANTS constants;
 extern DECAY_CONSTANTS constants;
 
-Analyzer::Analyzer( int dof , DataManager* datamanager,const char* minName = "Minuit2", const char* algoName = "" )
+Analyzer::Analyzer( int dof , DataManager*  datamanager,const char* minName = "Minuit2", const char* algoName = "" )
 {
   cout << "Construct analyzer ... " << endl;
 

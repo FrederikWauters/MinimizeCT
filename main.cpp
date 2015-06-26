@@ -9,6 +9,7 @@ dof = 4 -> scan over ct+ctp and ct-ctp
 */
 
 #include <cstdio>
+#include <cstdlib>
 #include <unistd.h>
 #include <iostream>
 #include <string>
@@ -102,7 +103,7 @@ if(argc==nArgc)
             case 's':
 	      if(i+1 < argc)
               {
-	        stepsize = atof(argv[i+1]);
+	        stepsize = std::atof(argv[i+1]);
 	        i+=2;
 	      }
               else
@@ -114,7 +115,7 @@ if(argc==nArgc)
             case 'x':
 	      if(i+1 < argc)
               {
-	        spread_x = atof(argv[i+1]);
+	        spread_x = std::atof(argv[i+1]);
 	        i+=2;
 	      }
               else
@@ -126,7 +127,7 @@ if(argc==nArgc)
             case 'y':
 	      if(i+1 < argc)
               {
-	        spread_y = atof(argv[i+1]);
+	        spread_y = std::atof(argv[i+1]);
 	        i+=2;
 	      }
               else
@@ -138,7 +139,7 @@ if(argc==nArgc)
             case 'd':
 	      if(i+1 < argc)
               {
-	        dof = atoi(argv[i+1]);
+	        dof = std::atoi(argv[i+1]);
 	        i+=2;
 	      }
               else
@@ -157,6 +158,7 @@ if(argc==nArgc)
   }
   else
   {
+    cout << " dof = 2 -> CT vs CS  , dof = 4 -> CT+C'T vs CT-C'T,  dof = -2  -> CT vs CS for right handed  , dof = -4  -> CS+C'S vs CS-C'S for right handed  " << endl;
     cout << " use as ./Minimize -i inputfile -o outputfile -s step -x Xrange -y Yrange -d dof" << endl;
     return 1;
   }
