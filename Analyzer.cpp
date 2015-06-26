@@ -156,7 +156,7 @@ double Analyzer::ChiSqrFunction2bis(const double *xx )
 
 double Analyzer::ChiSqrFunction4(const double *xx )
 {
-  double ca = xx[0];
+  double ca = xx[0]; 
   double vud = xx[1];
   double cs = xx[2];
   double csp = xx[3];
@@ -239,6 +239,7 @@ int Analyzer::TestRun(double x, double y, int dof)
   double ca = constants.ca_fixed[0];
   double vud = constants.vUD[0];
   double cs, csp, ct, ctp;
+  
 
   cout << " data size " << data.size() << endl;
 
