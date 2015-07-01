@@ -302,23 +302,24 @@ void DataManager::WriteOutput()
   g95CL->Write();
   c1->Write();
   
-  TData* datapoint = 0;
-  TTree* tree = new TTree("InputData","Input data to this minimizer run");
-  tree->Branch("datapoint","TData",&datapoint,0,64000);
-  
-  if(data.size()>0)
-  {
-    for(int i = 0; i < data.size(); i++)
-    {
-      datapoint = data.at(i);
-      tree->Fill();
-    }
-  }
+  //disable writing to tree, doesn`t work for some reason with gcc 4.4.7 and root 3.34
+//  TData* datapoint = 0;
+//  TTree* tree = new TTree("InputData","Input data to this minimizer run");
+//  tree->Branch("datapoint","TData",&datapoint,0,64000);
+//  
+//  if(data.size()>0)
+//  {
+//    for(int i = 0; i < data.size(); i++)
+//    {
+//      datapoint = data.at(i);
+//      tree->Fill();
+//    }
+//  }
   //data.at(0)->Write();
   //tree->Write();
   
   fout->Write();
-  delete tree;
+ // delete tree;
 }
 
 void DataManager::ConstructContour(TH2* h1, TH2* h2, TGraph* g)

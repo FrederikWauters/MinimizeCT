@@ -5,7 +5,7 @@ This class is a data-type for experimental data + functionalities
 **/
 
 //Std includes
-#include <iostream>
+//#include <iostream>
 #include <string>
 #include <cstring>
 #include <fstream>
@@ -23,7 +23,7 @@ using std::vector;
 extern DECAY_CONSTANTS constants;
 //CONSTANTS constants;
 
-ClassImp(TData)
+//ClassImp(TData)
 
 //constructor
 TData::TData()
@@ -53,7 +53,7 @@ TData::~TData()
 {
 }
 
-void TData::SetData(std::iostream& ss)
+void TData::SetData(std::stringstream& ss)
 {
   //cout << " Set data point " << endl;
   char iso[10];// = "Ca";
@@ -68,6 +68,7 @@ void TData::SetData(std::iostream& ss)
   double expV = 0.0;
   double err = 0.0;
   int useIt = 0;
+
   
   ss >> iso >> par >> jI  >> jF  >> zD >> plmn >> mFermi >> mGamTel >> avME >> expV >>  err >> useIt;
 

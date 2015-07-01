@@ -6,10 +6,20 @@
 #include <cstring>
 #include <sstream>
 #include <fstream>
-#include "TObject.h"
+#include <vector>
+//#include "TObject.h"
+
+// TData holds the input data and the formulas of JTW. It is setup to inherint from TObject so it can be saved to the output file
+
+// note june 2015:
+// 
+// i have troubles compiling this code with root 5.34 and gcc 4.4.7
+
+using namespace std;
 
 
-class TData : public TObject {
+//class TData : public TObject {
+class TData {
 
   private:
   
@@ -57,7 +67,7 @@ class TData : public TObject {
 	double Error() { return error; }
 	bool Use() { return use; }
 
-	void SetData(std::iostream& ss);
+	void SetData(std::stringstream& ss);
 	void Print();
 
 	double a(double cv, double ca, double cs, double cps, double ct, double cpt);
@@ -71,7 +81,7 @@ class TData : public TObject {
 	
 
 
- ClassDef(TData,3);
+ //ClassDef(TData,3);
     
 };
 

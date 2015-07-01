@@ -17,7 +17,8 @@ CXXFLAGS= -g -O2 -Wall $(ROOT_CFLAGS) -fPIC -I$(ROOTSYS)/include -I$(CURRENT_DIR
 LDFLAGS=$(ROOT_LIBS)
 
 
-all: $(EXECUTABLE) libDataClasses.so libDataClasses.rootmap 
+#all: $(EXECUTABLE) libDataClasses.so libDataClasses.rootmap 
+all: $(EXECUTABLE) libDataClasses.so 
 
 #$(EXECUTABLE): main.cpp $(OBJECTS) $(CURRENT_DIR)/libDataClasses.so
 #	$(CXX)  $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
@@ -25,16 +26,17 @@ all: $(EXECUTABLE) libDataClasses.so libDataClasses.rootmap
 #TInput.o: TInput.cpp $(HEADERS)
 #	$(CXX) -c -o $@ $< $(CXXFLAGS) $(ROOT_FLAGS)
 
-DataClassesDict.cpp: $(HEADERS) LinkDef.h
+DataClassesDict.cpp: $(HEADERS) /home/fwauters/root/cint/cint/include/iostream.h LinkDef.h 
 	$(ROOTSYS)/bin/rootcint -f $@ -c $^
 
 $(CURRENT_DIR)/libDataClasses.so: $(OBJECTS) DataClassesDict.o 
 	$(CXX) -Wl,--no-as-needed $(ROOT_LIBS) -shared -fPIC -o $@ $(shell root-config --ldflags) -I$(ROOTSYS)/include $^
 
-libDataClasses.rootmap: libDataClasses.so LinkDef.h 
-	rlibmap -f -o $@ -l libDataClasses.so -c LinkDef.h 
+#libDataClasses.rootmap: libDataClasses.so LinkDef.h 
+#	rlibmap -f -o $@ -l libDataClasses.so -c LinkDef.h 
 
-$(EXECUTABLE): main.cpp $(OBJECTS) $(CURRENT_DIR)/libDataClasses.so
+#$(EXECUTABLE): main.cpp $(OBJECTS) $(CURRENT_DIR)/libDataClasses.so
+$(EXECUTABLE): main.cpp $(OBJECTS)
 	$(CXX)  $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 
